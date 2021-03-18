@@ -1,0 +1,258 @@
+\PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[9pt, fr,a4paper,
+$if(handout)$
+  handout,
+$endif$
+]{beamer}
+$if(dys)$
+\usepackage{fontspec}
+\setmainfont{OpenDyslexic}
+$endif$
+\usepackage[french]{babel}
+\usepackage{xcolor}
+\widowpenalties 1 10000
+\hypersetup{
+$if(title-meta)$
+  pdftitle={$title-meta$},
+$endif$
+$if(author-meta)$
+  pdfauthor={$author-meta$},
+$endif$
+$if(lang)$
+  pdflang={$lang$},
+$endif$
+$if(subject)$
+  pdfsubject={$subject$},
+$endif$
+$if(keywords)$
+  pdfkeywords={$for(keywords)$$keywords$$sep$, $endfor$},
+$endif$
+$if(colorlinks)$
+  colorlinks=true,
+  linkcolor=$if(linkcolor)$$linkcolor$$else$Maroon$endif$,
+  filecolor=$if(filecolor)$$filecolor$$else$Maroon$endif$,
+  citecolor=$if(citecolor)$$citecolor$$else$Blue$endif$,
+  urlcolor=$if(urlcolor)$$urlcolor$$else$Blue$endif$,
+$else$
+  hidelinks,
+$endif$
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+$if(geometry)$
+\geometry{$for(geometry)$$geometry$$sep$,$endfor$}
+$endif$
+$if(listings)$
+\usepackage{listings}
+\newcommand{\passthrough}[1]{#1}
+\lstset{defaultdialect=[5.3]Lua}
+\lstset{defaultdialect=[x86masm]Assembler}
+$endif$
+$if(tables)$
+\usepackage{longtable,booktabs}
+\usepackage{calc} % for calculating minipage widths
+$if(beamer)$
+\usepackage{caption}
+% Make caption package work with longtable
+\makeatletter
+\def\fnum@table{\tablename~\thetable}
+\makeatother
+$else$
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+$endif$
+$endif$
+$if(graphics)$
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+$endif$
+$if(links-as-notes)$
+% Make links footnotes instead of hotlinks:
+\DeclareRobustCommand{\href}[2]{#2\footnote{\url{#1}}}
+$endif$
+$if(strikeout)$
+\usepackage[normalem]{ulem}
+% Avoid problems with \sout in headers with hyperref
+\pdfstringdefDisableCommands{\renewcommand{\sout}{}}
+$endif$
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+$if(numbersections)$
+\setcounter{secnumdepth}{$if(secnumdepth)$$secnumdepth$$else$5$endif$}
+$else$
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+$endif$
+$if(beamer)$
+$else$
+$if(block-headings)$
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+$endif$
+$endif$
+$if(pagestyle)$
+\pagestyle{$pagestyle$}
+$endif$
+$for(header-includes)$
+$header-includes$
+$endfor$
+$if(lang)$
+\ifxetex
+  % Load polyglossia as late as possible: uses bidi with RTL langages (e.g. Hebrew, Arabic)
+  \usepackage{polyglossia}
+  \setmainlanguage[$for(polyglossia-lang.options)$$polyglossia-lang.options$$sep$,$endfor$]{$polyglossia-lang.name$}
+$for(polyglossia-otherlangs)$
+  \setotherlanguage[$for(polyglossia-otherlangs.options)$$polyglossia-otherlangs.options$$sep$,$endfor$]{$polyglossia-otherlangs.name$}
+$endfor$
+\else
+  \usepackage[shorthands=off,$for(babel-otherlangs)$$babel-otherlangs$,$endfor$main=$babel-lang$]{babel}
+$if(babel-newcommands)$
+  $babel-newcommands$
+$endif$
+\fi
+$endif$
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+$if(dir)$
+\ifxetex
+  % Load bidi as late as possible as it modifies e.g. graphicx
+  \usepackage{bidi}
+\fi
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \TeXXeTstate=1
+  \newcommand{\RL}[1]{\beginR #1\endR}
+  \newcommand{\LR}[1]{\beginL #1\endL}
+  \newenvironment{RTL}{\beginR}{\endR}
+  \newenvironment{LTR}{\beginL}{\endL}
+\fi
+$endif$
+$if(natbib)$
+\usepackage[$natbiboptions$]{natbib}
+\bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
+$endif$
+$if(biblatex)$
+\usepackage[$if(biblio-style)$style=$biblio-style$,$endif$$for(biblatexoptions)$$biblatexoptions$$sep$,$endfor$]{biblatex}
+$for(bibliography)$
+\addbibresource{$bibliography$}
+$endfor$
+$endif$
+$if(csl-refs)$
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1 \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces\fi
+  % set entry spacing
+  \ifnum #2 > 0
+  \setlength{\parskip}{#2\baselineskip}
+  \fi
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+$endif$
+$if(title)$
+\title{$title$$if(thanks)$\thanks{$thanks$}$endif$}
+$endif$
+\subtitle{$subtitle$}
+\author{$for(author)$$author$$sep$ \and $endfor$}
+\date{$date$}
+$if(institute)$
+\institute{$for(institute)$$institute$$sep$ \and $endfor$}
+$endif$
+$if(titlegraphic)$
+\titlegraphic{\includegraphics{$titlegraphic$}}
+$endif$
+$if(logo)$
+\logo{\includegraphics{$logo$}}
+$endif$
+
+\usetheme{Warsaw}
+\definecolor{bleu3il}{rgb}{0, 0.314, 0.404} % UBC Blue (primary)
+\definecolor{orange3il}{rgb}{0.906, 0.267, 0.0} % UBC Grey (secondary)
+
+\setbeamercolor{palette primary}{bg=orange3il,fg=white}
+\setbeamercolor{palette secondary}{bg=bleu3il,fg=white}
+\setbeamercolor{palette tertiary}{bg=orange3il,fg=white}
+\setbeamercolor{palette quaternary}{bg=bleu3il,fg=white}
+\setbeamercolor{structure}{fg=orange3il} % itemize, enumerate, etc
+\setbeamercolor{section in toc}{fg=bleu3il} % TOC sections
+
+
+\date{\today}
+\institute[3il Rodez] % Your institution may be shorthand to save space
+{
+    % Your institution for the title page
+    3il Rodez
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\AtBeginSection[]
+  {
+    \ifnum \value{framenumber}>1
+      \begin{frame}<beamer>
+      \frametitle{Plan}
+      \tableofcontents[currentsection, hideothersubsections]
+      \end{frame}
+    \else
+    \fi
+  }
+  \expandafter\def\expandafter\insertshorttitle\expandafter{%
+  \insertshorttitle\hfill%
+  \insertframenumber\,/\,\inserttotalframenumber}
+
+  \maketitle
+  
+  \begin{frame}
+    \frametitle{Sommaire}
+    \tableofcontents[subsectionstyle=hide/hide/hide]
+  \end{frame}
+    
+
+$body$
+
+$for(include-after)$
+$include-after$
+$endfor$
+
+\begin{frame}{Merci}
+  \vfill
+  \Huge{Merci pour votre attention.}
+  \vfill
+\end{frame}
+
+\end{document}
